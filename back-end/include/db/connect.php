@@ -10,7 +10,7 @@ $user = "teste";
 $pass = "12345678";
 
 try {
-    $dbh = new PDO('mysql:host=localhost;dbname=imobiliaria', $user, $pass);
+    $dbh = new PDO('mysql:host=localhost;dbname=imob_db', $user, $pass);
 
     // Prepara para a query
     // $stmt = $dbh->prepare("SELECT ....BAUBAUBAU;");

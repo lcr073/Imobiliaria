@@ -17,10 +17,12 @@
 	});
 
 	// Chegando utilizando parametros
-	$app->get('/logon/',function(Request $request){
-		var_dump($request);
-	});
-
+	$app->get('/logon/{name}', function (Request $request, Response $response, array $args) {
+        $name = $args['name'];
+        $response->getBody()->write("Hello, $name");
+	//echo '$args[\'name\']';
+    return $response;
+});
 	$app->run();
 
 ?>
