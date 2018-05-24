@@ -43,42 +43,47 @@
 
    // Variavel geral de ID
     $id=0;
-    // Verifica no banco se ja tem algum usuario com aquele nome ou email escolhido
-    //Prepara para a query
-    $stmt = $dbh->prepare("SELECT  id FROM tab_user INNER JOIN usuarios ON tab_user.id = usuarios.id_user WHERE email= :EMAIL OR cpf= :CPF OR rg= :RG;");
 
-    // bindParam ajuda evitar SQLinjection
-    // Vinculando parametros de entrada nas variaveis
-    $email = $obj['email'];
-    $cpf = $obj['cpf'];
-    $rg = $obj['rg'];
+    // Verifica se veio algum campo em branco
+    if(!(isset($obj['nome_completo']) AND isset($obj['email']) AND isset($obj['senha']) AND isset($obj['cpf']) AND isset($obj['rg']) AND isset($obj['tel_contato']))) {
+        // Faltou algum campo então nao é aprovada a movimentacao
+        http_response_code(403);
+        exit("Houve algum erro");
 
-    // Vinculando parametros
-    $stmt->bindParam(":EMAIL",$email);
-    $stmt->bindParam(":CPF",$cpf);
-    $stmt->bindParam(":RG",$rg);
+    }
+    // Todos os campos vieram preenchidos
+    else{
+        // Verifica no banco se ja tem algum usuario com aquele nome ou email escolhido
+        //Prepara para a query
+        $stmt = $dbh->prepare("SELECT  id FROM tab_user INNER JOIN usuarios ON tab_user.id = usuarios.id_user WHERE email= :EMAIL OR cpf= :CPF OR rg= :RG;");
 
-    // Realmente realiza a execucao da query
-    $stmt -> execute();
+        // bindParam ajuda evitar SQLinjection
+        // Vinculando parametros de entrada nas variaveis
+        $email = $obj['email'];
+        $cpf = $obj['cpf'];
+        $rg = $obj['rg'];
 
-   // Exibe a quantidade de itens encontrados na query
-   $qtd_result = $stmt->rowCount();
+        // Vinculando parametros
+        $stmt->bindParam(":EMAIL",$email);
+        $stmt->bindParam(":CPF",$cpf);
+        $stmt->bindParam(":RG",$rg);
 
-  // Validando se tem usuario com aquela senha
-  if($qtd_result  > 0){
-     // Sai e da erro
-      // Ver o retorno de codigo
-      http_response_code(403);
-      exit("Nome de usuario, CPF ou RG ja existente");
-  }
-  else{
-      // Validar dados e se estiver tudo correto cadastrar no DB
-      // Verifica se tudo veio preenchido
+        // Realmente realiza a execucao da query
+        $stmt -> execute();
 
-        // Tudo veio preenchido
-        if(isset($obj['nome_completo']) AND isset($obj['email']) AND isset($obj['senha']) AND isset($obj['cpf']) AND isset($obj['rg']) AND isset($obj['tel_contato'])) {
+        // Exibe a quantidade de itens encontrados na query
+        $qtd_result = $stmt->rowCount();
+
+        // Validando se tem usuario com aquela senha
+        if($qtd_result  > 0){
+            // Sai e da erro
+            http_response_code(403);
+            exit("Email, CPF ou RG ja existente");
+        }
+        else {
+            // Validar dados e se estiver tudo correto cadastrar no DB
+
             // Realiza operação de hash na senha para armazena-la no DB
-
             $senha = password_hash($obj['senha'], PASSWORD_DEFAULT);
 
             try {
@@ -87,11 +92,11 @@
 
                 // Vinculando parametros
 
-                $stmt->bindParam(":EMAIL",$email);
+                $stmt->bindParam(":EMAIL", $email);
                 $stmt->bindParam(":SENHA", $senha);
 
                 // Realmente executa a query
-                $stmt -> execute();
+                $stmt->execute();
 
             } catch (Exception $e) {
                 echo 'Exceção capturada: ', $e->getMessage(), "\n";
@@ -100,59 +105,56 @@
             }
 
             // Busca no DB o ID gerado na insercao
-            //Prepara para a query
-                        $stmt = $dbh->prepare("SELECT  id FROM tab_user WHERE email= :EMAIL;");
 
-            // Vinculando parametros
-                        $stmt->bindParam(":EMAIL",$email);
+            try {
+                //Prepara para a query
+                $stmt = $dbh->prepare("SELECT  id FROM tab_user WHERE email= :EMAIL;");
 
-            // Realmente realiza a execucao da query
-                        $stmt -> execute();
+                // Vinculando parametros
+                $stmt->bindParam(":EMAIL", $email);
 
-                        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                // Realmente realiza a execucao da query
+                $stmt->execute();
 
-                        $resposta = array();
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Para cada elemento de result
+                // Para cada elemento de result
+                foreach ($result as $row) {
+                    // vincula o id encontrado para realizar validaçao
+                    $id = $row['id'];
+                }
 
-                        foreach ($result as $row) {
-                            // vincula o id encontrado para realizar validaçao
-                            $id = $row['id'];
-                        }
+                // Vinculando parametros de entrada nas variaveis
+                $nome_completo = $obj['nome_completo'];
+                $tel_contato = $obj['tel_contato'];
 
-echo "aa $id";
-            // Vinculando parametros de entrada nas variaveis
-            $nome_completo = $obj['nome_completo'];
-            $tel_contato = $obj['tel_contato'];
+            } catch (Exception $e) {
+                echo 'Exceção capturada: ', $e->getMessage(), "\n";
+                http_response_code(403);
+                exit("Erro DB");
+            }
 
-            // Realiza insercao usuarios
-             $stmt = $dbh->prepare("INSERT INTO usuarios (id_user, nome_completo, cpf, rg, tel_contato) VALUES (:ID,:NOME_COMPLETO, :CPF, :RG, :TEL_CONTATO)");
+            try {
+                // Realiza insercao usuarios
+                $stmt = $dbh->prepare("INSERT INTO usuarios (id_user, nome_completo, cpf, rg, tel_contato) VALUES (:ID,:NOME_COMPLETO, :CPF, :RG, :TEL_CONTATO)");
 
-             // Vinculando parametros/
-             $stmt->bindParam(":ID",$id);
-             $stmt->bindParam(":NOME_COMPLETO",$nome_completo);
-             $stmt->bindParam(":TEL_CONTATO", $tel_contato);
-             $stmt->bindParam(":CPF",$cpf);
-             $stmt->bindParam(":RG",$rg);
+                // Vinculando parametros/
+                $stmt->bindParam(":ID", $id);
+                $stmt->bindParam(":NOME_COMPLETO", $nome_completo);
+                $stmt->bindParam(":TEL_CONTATO", $tel_contato);
+                $stmt->bindParam(":CPF", $cpf);
+                $stmt->bindParam(":RG", $rg);
 
-             // Realmente executa a query
-             $stmt -> execute();
+                // Realmente executa a query
+                $stmt->execute();
+            } catch (Exception $e) {
+                echo 'Exceção capturada: ', $e->getMessage(), "\n";
+                http_response_code(403);
+                exit("Erro DB");
+            }
 
-             // Vai para nova pagina e retorna o codigo 201 (Criado)
-             http_response_code(201);
-             // header('Location: novoUsuarioCadastrado.php',true,201);
-
+            // Retorna o codigo 201 (Criado)
+            http_response_code(201);
         }
-         // Algum campo não veio preenchido
-         else{
-             // Faltou algum campo então nao é aprovada a movimentacao
-             http_response_code(403);
-             exit("Houve algum erro");
-         }
-       // Sofisticação .... REGEX
-
-      // header('Location: index.php');
-       exit;
-  }
-
+    }
 ?>

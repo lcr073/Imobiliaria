@@ -38,31 +38,37 @@ $email = $obj['email'];
 // Cost é a qtd de vezes que sera executado o algoritmo para gerar o hash
 $options = array("cost"=>4);
 
-// Verifica no banco se ja tem algum usuario com aquele nome ou email escolhido
-//Prepara para a query
-$stmt = $dbh->prepare("SELECT  id,senha FROM tab_user WHERE email= :EMAIL;");
+try {
+    // Verifica no banco se ja tem algum usuario com aquele nome ou email escolhido
+    //Prepara para a query
+    $stmt = $dbh->prepare("SELECT  id,senha FROM tab_user WHERE email= :EMAIL;");
 
-// Vinculando parametros
-$stmt->bindParam(":EMAIL",$email);
+    // Vinculando parametros
+    $stmt->bindParam(":EMAIL", $email);
 
-// Realmente realiza a execucao da query
-$stmt -> execute();
+    // Realmente realiza a execucao da query
+    $stmt->execute();
 
-$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$resposta = array();
-
-// Para cada elemento de result
-
- foreach ($result as $row){
-    // Senha correta
-    if(password_verify($obj['senha'],$row['senha'])){
-        // Insere o id para resposta
-        array_push($resposta,$row['id']);
-        session_start();
-        http_response_code(202);
-        exit("Usuario logado");
+    // Para cada elemento de result
+    foreach ($result as $row) {
+        // Senha correta
+        if (password_verify($obj['senha'], $row['senha'])) {
+            // Inicia uma sessao para esse usuario
+            session_start();
+            // Vincula seu id nessa sessao criada
+            $_SESSION['id_user'] = $row['id'];
+            // Responde ao usuario
+            http_response_code(202);
+            // Sai da execucao
+            exit("Usuario logado");
+        }
     }
+}catch (Exception $e) {
+    echo 'Exceção capturada: ', $e->getMessage(), "\n";
+    http_response_code(403);
+    exit("Erro DB");
 }
 
 // Saiu do foreach é porque nada foi igual
