@@ -13,8 +13,19 @@
 
 	// Chegando utilizando o /login/
 	$app->any('/login/',function(){
-		echo FOI;
+		include 'api/sistemaLogin.php';
+		//$json = $req->getBody();
+		//echo "$json";
+
 	});
+
+	// Rota para cadastrar usuario
+	$app->any('/cadastraUsuario/',function(){
+		include 'api/cadastraUsuario.php';
+		//$json = $req->getBody();
+		//echo "$json";
+
+	});	
 
 	// Chegando utilizando parametros
 	$app->get('/logon/{name}', function (Request $request, Response $response, array $args) {
