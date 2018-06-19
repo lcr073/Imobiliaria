@@ -26,10 +26,10 @@
  */
 
 // Recebe variaveis por Json (Retorna array indexado na variavel $obj)
-include "../include/json/json_rec.php";
+include "include/json/json_rec.php";
 
 // Valida no banco as informações recebidas
-include "../include/db/connect.php";
+include "include/db/connect.php";
 
 
 // bindParam ajuda evitar SQLinjection
