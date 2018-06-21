@@ -40,6 +40,15 @@ ini_set('display_startup_errors', TRUE);
 		include 'api/cadastraImovel.php';
 	});		
 
+	// Rota para criar reclamacao
+	$app->post('/reclamacao/',function(){
+		include 'api/cadastraReclamacao.php';
+	});		
+
+	// Rota para listar as reclamacoes de um certo contrato
+	$app->get('/reclamacao/{id_contrato}',function(Request $request, Response $response, array $args){
+		include 'api/listaReclamacoes.php';
+	});			
 
 //dellianapptest.ddns.net:2525/imobiliaria/Imobiliaria_Backend/back-end/imovel/-1/-1/-1/-1/-1/-1/-1/-1/-1/-1/-1
 	// Chegando utilizando parametros para obter imovel com todos os filtros possiveis
