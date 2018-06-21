@@ -40,7 +40,6 @@
 // Valida no banco as informações recebidas
    include "include/db/connect.php";
 
-
    // Variavel geral de ID
     $id=0;
 
@@ -56,7 +55,7 @@
         // Verifica no banco se ja tem algum usuario com aquele nome ou email escolhido
         //Prepara para a query
         $stmt = $dbh->prepare("SELECT  id FROM tab_user INNER JOIN usuarios ON tab_user.id = usuarios.id_user WHERE email= :EMAIL OR cpf= :CPF OR rg= :RG;");
-
+		
         // bindParam ajuda evitar SQLinjection
         // Vinculando parametros de entrada nas variaveis
         $email = $obj['email'];
@@ -70,7 +69,7 @@
 
         // Realmente realiza a execucao da query
         $stmt -> execute();
-
+		
         // Exibe a quantidade de itens encontrados na query
         $qtd_result = $stmt->rowCount();
 
@@ -155,6 +154,7 @@
 
             // Retorna o codigo 201 (Criado)
             http_response_code(201);
+            exit("Usuario cadastrado");
         }
     }
 ?>

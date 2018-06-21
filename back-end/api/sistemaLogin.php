@@ -34,7 +34,6 @@ include "include/db/connect.php";
 // bindParam ajuda evitar SQLinjection
 // Vinculando parametros de entrada nas variaveis
 $email = $obj['email'];
-
 // Cost é a qtd de vezes que sera executado o algoritmo para gerar o hash
 $options = array("cost"=>4);
 
@@ -64,7 +63,7 @@ try {
             // Sai da execucao
             exit("Usuario logado");
         }
-    }    
+    }
 }catch (Exception $e) {
     echo 'Exceção capturada: ', $e->getMessage(), "\n";
     http_response_code(403);
@@ -74,6 +73,4 @@ try {
 // Saiu do foreach é porque nada foi igual
 http_response_code(403);
 exit("Email e ou senha invalidos");
-
-
 ?>
