@@ -23,12 +23,9 @@
 // Valida no banco as informações recebidas
    include "include/db/connect.php";
 
-	//Verifica se existe uma sessão estabelecida
-/*	if(!(isset($_SESSION['id_user']))){
-		http_response_code(403);
-		exit("Usuario não logado");
-	}
-*/	
+//Verifica se existe uma sessão estabelecida
+   include "include/session.php";
+
 	$obj['id_contrato'] = $args['id_contrato'];
 
     // Verifica se veio algum campo em branco

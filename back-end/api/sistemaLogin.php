@@ -57,9 +57,11 @@ try {
             // Inicia uma sessao para esse usuario
             session_start();
             // Vincula seu id nessa sessao criada
-            $_SESSION['id_user'] = $row['id'];
+            $_SESSION["id_user"] = $row['id'];
             // Responde ao usuario
             http_response_code(202);
+            echo $_SESSION["id_user"];
+            echo session_id();
             // Sai da execucao
             exit("Usuario logado");
         }

@@ -47,12 +47,9 @@
 // Valida no banco as informações recebidas
    include "include/db/connect.php";
 
-	//Verifica se existe uma sessão estabelecida
-/*	if(!(isset($_SESSION['id_user']))){
-		http_response_code(403);
-		exit("Usuario não logado");
-	}
-*/	
+//Verifica se existe uma sessão estabelecida
+   include "include/session.php";
+
     // Verifica se veio algum campo em branco
     if(!(isset($obj['id_dono']) AND isset($obj['tipo']) AND isset($obj['n_quartos']) AND isset($obj['n_banheiros']) AND isset($obj['valor_aluguel']) AND isset($obj['rua']) AND isset($obj['area']) AND isset($obj['bairro']) AND isset($obj['estado']) AND isset($obj['cidade']) AND isset($obj['contato_tel']) AND isset($obj['contato_email']) AND isset($obj['cep']) )) {
         // Faltou algum campo então nao é aprovada a movimentacao
