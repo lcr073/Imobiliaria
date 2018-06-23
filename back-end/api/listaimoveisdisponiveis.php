@@ -39,34 +39,37 @@ $where ='';
 //Contador para determinar o uqe escrever entre os parametros do where
 $variables = array();
 
-  
-	//Definição da clausura where,e montagem do array que irá dar Bind nos parametros
-	foreach($obj as $key => $val)
-	{	
-		$variable_length = count($variables);
-		
-		if($variable_length > 0)
-		{
-			$where=$where." AND ";
+  try{
+		//Definição da clausura where,e montagem do array que irá dar Bind nos parametros
+		foreach($obj as $key => $val)
+		{	
+			$variable_length = count($variables);
+			
+			if($variable_length > 0)
+			{
+				$where=$where." AND ";
+			}
+			//Verificar filtros de buscas parciais
+			switch($key){
+				case "rua":
+				case "area":
+				case "bairro":
+				case "estado":
+				case "cidade":
+					$where=$where . $key ." LIKE :" .$key. " ";
+					$val="%".$val."%";
+					$key=":".$key;
+					break;
+				default:
+					$where=$where . $key ." = :" .$key." " ;
+					break;
+			}
+			array_push($variables,array($key,$val));
 		}
-		//Verificar filtros de buscas parciais
-		switch($key){
-			case "rua":
-			case "area":
-			case "bairro":
-			case "estado":
-			case "cidade":
-				$where=$where . $key ." LIKE :" .$key. " ";
-				$val="%".$val."%";
-				$key=":".$key;
-				break;
-			default:
-				$where=$where . $key ." = :" .$key." " ;
-				break;
-		}
-		array_push($variables,array($key,$val));
-	}
-	
+	}catch (Exception $e) {
+		echo 'Exceção capturada: ', $e->getMessage(), "\n";
+    }
+
 	try{
 		//Prepara para a query
 		if(strlen($where) > 0)
@@ -78,7 +81,6 @@ $variables = array();
 		{
 			$stmt = $dbh->prepare("SELECT * FROM imoveis");
 		}
-		
 			
 		//Supostamente atribuir o count do array em uma variavel é melhor que colocar diretamente no loop For
 		$variable_length = count($variables); 

@@ -1,7 +1,7 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-ini_set('display_startup_errors', TRUE);
+//error_reporting(E_ALL);
+//ini_set('display_errors', TRUE);
+//ini_set('display_startup_errors', TRUE);
 
 
 	use \Psr\Http\Message\ServerRequestInterface as Request;
@@ -56,7 +56,6 @@ ini_set('display_startup_errors', TRUE);
 
 		$resp = array();
 
-
 		if(strcmp($args['valor'],"-1")){
 			$resp['valor'] = $args['valor'];
 		}
@@ -102,7 +101,6 @@ ini_set('display_startup_errors', TRUE);
 		}
 	
 		$obj = json_encode($resp);
-
 		include 'api/listaimoveisdisponiveis.php';
 
     return $response;

@@ -61,9 +61,8 @@ try {
             // Responde ao usuario
             http_response_code(202);
             echo $_SESSION["id_user"];
-            echo session_id();
             // Sai da execucao
-            exit("Usuario logado");
+            exit(" Usuario logado");
         }
     }
 }catch (Exception $e) {
