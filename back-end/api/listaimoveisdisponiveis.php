@@ -25,7 +25,7 @@
 (200) Caso a pesquisa retorne resultados
 (403) Houve algum erro
  */
-
+//echo var_dump($obj);
 // --- JSON vindo pelo PhpSlim
 // Recebe variaveis por Json (Retorna array indexado na variavel $obj)
 //    include "include/json/json_rec.php";
@@ -38,11 +38,12 @@ $where ='';
 
 //Contador para determinar o uqe escrever entre os parametros do where
 $variables = array();
-
   try{
+
 		//Definição da clausura where,e montagem do array que irá dar Bind nos parametros
 		foreach($obj as $key => $val)
 		{	
+
 			$variable_length = count($variables);
 			
 			if($variable_length > 0)
@@ -62,6 +63,7 @@ $variables = array();
 					break;
 				default:
 					$where=$where . $key ." = :" .$key." " ;
+					$key=":".$key;
 					break;
 			}
 			array_push($variables,array($key,$val));
@@ -89,7 +91,7 @@ $variables = array();
 		for( $i = 0 ;$i<$variable_length;$i++)
 		{	
 			//Vinculando parametros
-			$stmt->bindParam($variables[$i][0],$variables[$i][1]);
+			$stmt->bindParam($variables[$i][0],$variables[$i][1]);	
 		}
 			
 		// Realmente realiza a execucao da query
@@ -105,13 +107,13 @@ $variables = array();
 		some databases may return the number of rows returned by that statement. However, 
 		this behaviour is not guaranteed for all databases and should not be relied on for 
 		portable applications. */
-		
+		//echo($query);
 		//Checa se não existe resultados
 		if(count($result) == 0){
-			
+				
 			//Retorna o codigo 204 (Vazio)
-			http_response_code(204);
-			exit();
+			http_response_code(200);
+			exit("Vazio");
 		}
 		else {
 			//Retorna o codigo 200 (OK)

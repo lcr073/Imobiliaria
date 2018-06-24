@@ -73,14 +73,14 @@
 		}
 
 		if(strcmp($args['nquartos'],"-1")){ 
-			$resp['nquartos'] = $args['nquartos'];		 	
+			$resp['n_quartos'] = $args['nquartos'];		 	
 		}
 
 		if(strcmp($args['estado'],"-1")){  
 			$resp['estado'] = $args['estado'];			
 		}
 		if(strcmp($args['nbanheiros'],"-1")){  
-			$resp['nbanheiros'] = $args['nbanheiros'];			
+			$resp['n_banheiros'] = $args['nbanheiros'];			
 		}
 
 		if(strcmp($args['cidade'],"-1")){  
@@ -99,8 +99,11 @@
 		if(strcmp($args['contatoemail'],"-1")){  
 			$resp['contatoemail'] = $args['contatoemail'];		
 		}
-	
-		$obj = json_encode($resp);
+
+		$resp = json_encode($resp);
+		$obj = json_decode($resp,true);
+
+  
 		include 'api/listaimoveisdisponiveis.php';
 
     return $response;
